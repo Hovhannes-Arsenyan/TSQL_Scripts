@@ -7,16 +7,17 @@ IF NOT EXISTS (
     FROM [master].[sys].[databases]
     WHERE [name] = @Database_Name)
 
-	BEGIN
-		SET NOCOUNT OFF;
-		RAISERROR('Database does not exist.',11,1);
-	END
+    BEGIN
+        SET NOCOUNT OFF;
+        RAISERROR('Database does not exist.',11,1);
+    END
 ELSE
-	BEGIN
-		DECLARE @SQL_FINAL NVARCHAR(MAX) = '';
-		DECLARE @SQL_Tables NVARCHAR(MAX) = '(SELECT COUNT([name]) AS [Tables]' + CHAR(13) + 
-											 'FROM [' + @Database_Name + '].[sys].[tables]' + CHAR(13) + 
-											 'WHERE [type] = ''U'')';
+    BEGIN
+        DECLARE @SQL_FINAL NVARCHAR(MAX) = '';
+
+        DECLARE @SQL_Tables NVARCHAR(MAX) = '(SELECT COUNT([name]) AS [Tables]' + CHAR(13) + 
+                                             'FROM [' + @Database_Name + '].[sys].[tables]' + CHAR(13) + 
+                                             'WHERE [type] = ''U'')';
 
 		DECLARE @SQL_Views NVARCHAR(MAX) = '(SELECT COUNT([name]) AS [Views]' + CHAR(13) + 
 											'FROM [' + @Database_Name + '].[sys].[objects]' + CHAR(13) + 
