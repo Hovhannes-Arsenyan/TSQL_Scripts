@@ -3,9 +3,9 @@ SET NOCOUNT ON;
 DECLARE @Database_Name NVARCHAR(128) = 'AdventureWorks2017';
 
 IF NOT EXISTS (
-	SELECT *
-	FROM [master].[sys].[databases]
-	WHERE [name] = @Database_Name)
+    SELECT *
+    FROM [master].[sys].[databases]
+    WHERE [name] = @Database_Name)
 
 	BEGIN
 		SET NOCOUNT OFF;
