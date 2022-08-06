@@ -5,7 +5,7 @@ DECLARE @Database_Name NVARCHAR(128) = 'AdventureWorks2017';
 IF NOT EXISTS (
 	SELECT *
 	FROM [master].[sys].[databases]
-	where [name] = @Database_Name)
+	WHERE [name] = @Database_Name)
 
 	BEGIN
 		SET NOCOUNT OFF;
