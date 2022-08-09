@@ -76,7 +76,7 @@ SET @SQL = 'WITH CTE_Pivot_Temp ([Month],' + @YearList + ',[GRAND TOTAL])' + CHA
                              'WHEN ''October'' THEN 10' + CHAR(13) + 
                              'WHEN ''November'' THEN 11' + CHAR(13) + 
                              'WHEN ''December'' THEN 12' + CHAR(13) + 
-						     'WHEN ''TOTAL'' THEN 13' + CHAR(13) + 
+                             'WHEN ''TOTAL'' THEN 13' + CHAR(13) + 
                         'END ASC;'
 
 EXEC sp_executesql @SQL;
