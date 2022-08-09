@@ -37,8 +37,6 @@ SET @ColumnListColumnTotal = LEFT(@ColumnListColumnTotal,LEN(@ColumnListColumnTo
 SET @ColumnListRowTotal = LEFT(@ColumnListRowTotal,LEN(@ColumnListRowTotal) - 1);
 SET @ColumnListRowColumnTotal = LEFT(@ColumnListRowColumnTotal,LEN(@ColumnListRowColumnTotal) - 1);
 
-SELECT @ColumnListColumnTotal
-
 SET @SQL = 'WITH CTE_Pivot_Temp ([Month],' + @YearList + ',[GRAND TOTAL])' + CHAR(13) + 
            'AS' + CHAR(13) + 
            '(' + CHAR(13) + 
