@@ -69,28 +69,28 @@ SET @SQL = 'INSERT INTO #Table_Report ([Column_Name],[Position],[Data_Type],[IS_
                   'IIF(CAST(RIGHT(LEFT(@@VERSION,LEN(''Microsoft SQL Server'') + 5),CHARINDEX('' '',REVERSE(LEFT(@@VERSION,LEN(''Microsoft SQL Server'') + 5)))-1) AS INT) <= 2017,''NO'',IIF([SSC].[is_masked] = 0,''NO'',''YES'')) AS [IS_Masked],' + CHAR(13) + 
                   'IIF([SSC].[encryption_type] IS NOT NULL,''YES'',''NO'') AS [IS_Encrypted],' + CHAR(13) + 
                   'IIF((SELECT [ISTC].[CONSTRAINT_TYPE]' + CHAR(13) + 
-                       'FROM ' + QUOTENAME(@DatabaseName) + '.INFORMATION_SCHEMA.COLUMNS AS [ISC2]' + CHAR(13) + 
-                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS [ISKCU] ON [ISC2].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
-                                                                                                                 'AND [ISC2].[COLUMN_NAME] = [ISKCU].[COLUMN_NAME]' + CHAR(13) + 
-                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS [ISTC] ON [ISTC].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
-                                                                                                                 'AND [ISTC].[CONSTRAINT_NAME] = [ISKCU].[CONSTRAINT_NAME]' + CHAR(13) + 
-                                                                                                                 'AND [ISTC].[CONSTRAINT_TYPE] = N''PRIMARY KEY''' + CHAR(13) + 
+                       'FROM ' + QUOTENAME(@DatabaseName) + '.[INFORMATION_SCHEMA].[COLUMNS] AS [ISC2]' + CHAR(13) + 
+                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.[INFORMATION_SCHEMA].[KEY_COLUMN_USAGE] AS [ISKCU] ON [ISC2].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
+                                                                                                                     'AND [ISC2].[COLUMN_NAME] = [ISKCU].[COLUMN_NAME]' + CHAR(13) + 
+                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.[INFORMATION_SCHEMA].[TABLE_CONSTRAINTS] AS [ISTC] ON [ISTC].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
+                                                                                                                     'AND [ISTC].[CONSTRAINT_NAME] = [ISKCU].[CONSTRAINT_NAME]' + CHAR(13) + 
+                                                                                                                     'AND [ISTC].[CONSTRAINT_TYPE] = N''PRIMARY KEY''' + CHAR(13) + 
                        'WHERE [ISC2].[TABLE_CATALOG] = [ISC].[TABLE_CATALOG]' + CHAR(13) + 
                          'AND [ISC2].[TABLE_NAME] = [ISC].[TABLE_NAME]' + CHAR(13) + 
                          'AND [ISC2].[COLUMN_NAME] = [ISC].[COLUMN_NAME]) IS NOT NULL, ''YES'',''NO'') AS [IS_PK],' + CHAR(13) + 
                   'IIF((SELECT [ISTC].[CONSTRAINT_TYPE]' + CHAR(13) + 
-                       'FROM ' + QUOTENAME(@DatabaseName) + '.INFORMATION_SCHEMA.COLUMNS AS [ISC3]' + CHAR(13) + 
-                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS [ISKCU] ON [ISC3].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
-                                                                                                               'AND [ISC3].[COLUMN_NAME] = [ISKCU].[COLUMN_NAME]' + CHAR(13) + 
-                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS [ISTC] ON [ISTC].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
-                                                                                                               'AND [ISTC].[CONSTRAINT_NAME] = [ISKCU].[CONSTRAINT_NAME]' + CHAR(13) + 
-                                                                                                               'AND [ISTC].[CONSTRAINT_TYPE] = N''FOREIGN KEY''' + CHAR(13) + 
+                       'FROM ' + QUOTENAME(@DatabaseName) + '.[INFORMATION_SCHEMA].[COLUMNS] AS [ISC3]' + CHAR(13) + 
+                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.[INFORMATION_SCHEMA].[KEY_COLUMN_USAGE] AS [ISKCU] ON [ISC3].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
+                                                                                                                     'AND [ISC3].[COLUMN_NAME] = [ISKCU].[COLUMN_NAME]' + CHAR(13) + 
+                       'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.[INFORMATION_SCHEMA].[TABLE_CONSTRAINTS] AS [ISTC] ON [ISTC].[TABLE_NAME] = [ISKCU].[TABLE_NAME]' + CHAR(13) + 
+                                                                                                                     'AND [ISTC].[CONSTRAINT_NAME] = [ISKCU].[CONSTRAINT_NAME]' + CHAR(13) + 
+                                                                                                                     'AND [ISTC].[CONSTRAINT_TYPE] = N''FOREIGN KEY''' + CHAR(13) + 
                        'WHERE [ISC3].[TABLE_CATALOG] = [ISC].[TABLE_CATALOG]' + CHAR(13) + 
                          'AND [ISC3].[TABLE_NAME] = [ISC].[TABLE_NAME]' + CHAR(13) + 
                          'AND [ISC3].[COLUMN_NAME] = [ISC].[COLUMN_NAME]) IS NOT NULL, ''YES'',''NO'') AS [IS_FK]' + CHAR(13) + 
-           'FROM ' + QUOTENAME(@DatabaseName) + '.INFORMATION_SCHEMA.COLUMNS AS [ISC]' + CHAR(13) + 
-           'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.sys.columns AS [SSC] ON OBJECT_ID([ISC].[TABLE_NAME],''U'') = [SSC].[object_id]' + CHAR(13) + 
-                                                                           'AND [ISC].[COLUMN_NAME] = [SSC].[name]' + CHAR(13) + 
+           'FROM ' + QUOTENAME(@DatabaseName) + '.[INFORMATION_SCHEMA].[COLUMNS] AS [ISC]' + CHAR(13) + 
+           'INNER JOIN ' + QUOTENAME(@DatabaseName) + '.[sys].[columns] AS [SSC] ON OBJECT_ID([ISC].[TABLE_NAME],''U'') = [SSC].[object_id]' + CHAR(13) + 
+                                                                               'AND [ISC].[COLUMN_NAME] = [SSC].[name]' + CHAR(13) + 
            'WHERE [ISC].[TABLE_CATALOG] = ''' + @DatabaseName + '''' + CHAR(13) + 
              'AND [ISC].[TABLE_NAME] = ''' + @TableName + ''';';
 
