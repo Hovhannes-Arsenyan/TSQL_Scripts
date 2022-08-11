@@ -9,7 +9,7 @@ IF NOT EXISTS (
 
     BEGIN
         SET NOCOUNT OFF;
-        THROW 50000, 'Database does not exist.', 1
+        THROW 50000, 'Database does not exist.', 1;
     END
 
 DECLARE @SQL_FINAL NVARCHAR(MAX) = '';
@@ -17,7 +17,7 @@ DECLARE @SQL_Tables NVARCHAR(MAX);
 DECLARE @SQL_Views NVARCHAR(MAX);
 DECLARE @SQL_Triggers NVARCHAR(MAX);
 DECLARE @SQL_Functions NVARCHAR(MAX);
-DECLARE @SQL_Stored_Procedures NVARCHAR(MAX)
+DECLARE @SQL_Stored_Procedures NVARCHAR(MAX);
 DECLARE @SQL_Sequences NVARCHAR(MAX);
 DECLARE @SQL_Indexes NVARCHAR(MAX);
 DECLARE @SQL_UDDTs NVARCHAR(MAX);
@@ -55,7 +55,7 @@ SET @SQL_Indexes = '(SELECT COUNT(DISTINCT [I].[name]) AS [Indexes]' + CHAR(13) 
 
 SET @SQL_UDDTs = '(SELECT COUNT([name])' + CHAR(13) + 
                  'FROM ' + QUOTENAME(@Database_Name) + '.[sys].[types]' + CHAR(13) + 
-				 'WHERE [is_user_defined] = 1)';
+                 'WHERE [is_user_defined] = 1)';
 
 SET @SQL_FINAL = '(SELECT 1 as [N], ''Tables'' AS [Object],' + @SQL_Tables + 'AS [Count])' + CHAR(13) + 
                   'UNION ALL' + CHAR(13) +  
