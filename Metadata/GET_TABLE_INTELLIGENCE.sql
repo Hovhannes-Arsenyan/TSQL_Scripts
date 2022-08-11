@@ -23,13 +23,9 @@ SET @SQL = 'IF NOT EXISTS' + CHAR(13) +
 
 EXEC sp_executesql @SQL;
 
-SET @SQL = 'SET @DBID_OUT = (SELECT [database_id]' + CHAR(13) + 
-                            'FROM [master].[sys].[databases]' + CHAR(13) + 
-                            'WHERE [name] = N''' + @DatabaseName + ''');';
-
-SET @ParamDefinition = N'@DBID_OUT INT OUTPUT';
-
-EXEC sp_executesql @SQL, @ParamDefinition, @DBID_OUT = @DBID OUTPUT;
+SET @DBID = (SELECT [database_id]
+             FROM [master].[sys].[databases]
+             WHERE [name] = @DatabaseName); 
 
 SET NOCOUNT ON;
 
