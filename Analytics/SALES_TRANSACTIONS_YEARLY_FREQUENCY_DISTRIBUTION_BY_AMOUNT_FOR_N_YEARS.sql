@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS ##Report;
 IF @Bin_Width * @Bin_Step < (SELECT MAX([SalesAmount])
                              FROM [AdventureWorksDW2017].[dbo].[FactInternetSales])
     BEGIN
-        THROW 50000, 'The maximum sales value in beyond the frequency range. Adjust bin parameters.', 1;
+        THROW 50000, 'The maximum sales value in the dataset is beyond the observation range. Adjust bin parameters.', 1;
     END
 
 INSERT INTO @Years ([Year])
