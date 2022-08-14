@@ -14,13 +14,13 @@ DECLARE @Current_Bin_End INT;
 DECLARE @Current_Bin_Text NVARCHAR(128);
 DECLARE @Current_Count INT;
 DECLARE @Year_List NVARCHAR(MAX) = '';
-DECLARE @Column_List NVARCHAR(MAX) = ''
+DECLARE @Column_List NVARCHAR(MAX) = '';
 
 DECLARE @Years TABLE 
 (
     [ID] INT NOT NULL IDENTITY(1, 1),
     [Year] INT NOT NULL
-)
+);
 
 DROP TABLE IF EXISTS ##Report;
 
@@ -44,7 +44,7 @@ CREATE TABLE ##Report
     [Bin_Start] INT NOT NULL,
     [Bin_End] INT NOT NULL,
     [Count] INT NOT NULL
-)
+);
 
 WHILE @Loop_Counter_Outer <= (SELECT COUNT(*) FROM @Years)
     BEGIN
