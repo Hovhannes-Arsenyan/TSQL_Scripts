@@ -1,28 +1,60 @@
 SET NOCOUNT ON;
 
-DECLARE @Database_Name NVARCHAR(128) = 'AdventureWorks2017';
+USE [AdventureWorksDW2017];
+GO
 
-IF NOT EXISTS (
-    SELECT *
-    FROM [master].[sys].[databases]
-    WHERE [name] = @Database_Name)
+DECLARE @LoopCounter INT = 1,
+        @Current_Table NVARCHAR(128),
+        @Current_Record_Count BIGINT,
+        @Current_PK_Count SMALLINT,
+        @Current_FK_Count SMALLINT,
+        @SQL NVARCHAR(MAX),
+        @SQL_Param_Definition NVARCHAR(MAX);
 
+DROP TABLE IF EXISTS #Report;
+
+CREATE TABLE #Report
+(
+    [ID] INT NOT NULL IDENTITY(1, 1),
+    [SHEMA] NVARCHAR(128) NOT NULL,
+    [TABLE] NVARCHAR(128) NOT NULL,
+    [COLUMNS] SMALLINT NOT NULL,
+    [RECORDS] BIGINT,
+    [PRIMARY_KEYS] SMALLINT,
+    [FOREIGN_KEYS] SMALLINT
+);
+
+INSERT INTO #Report ([SHEMA], [TABLE], [COLUMNS])
+SELECT DISTINCT SCHEMA_NAME([T].[schema_id]) AS [SHEMA], 
+                [T].[name] AS [TABLE], 
+                MAX([C].[ORDINAL_POSITION]) AS [COLUMNS]
+FROM [sys].[tables] AS [T]
+INNER JOIN [INFORMATION_SCHEMA].[COLUMNS] AS [C] ON [T].[name] = [C].[TABLE_NAME]
+WHERE [T].[type] = 'U'
+GROUP BY [T].[schema_id], [T].[name]
+ORDER BY [SHEMA] ASC, [TABLE] ASC;
+
+WHILE @LoopCounter <= (SELECT COUNT(*) FROM #Report)
     BEGIN
-        SET NOCOUNT OFF;
-        RAISERROR('Database does not exist.',11,1);
-    END
-ELSE
-    BEGIN
-        DECLARE @SQL NVARCHAR(MAX) = 'SELECT [ST].[name] AS [Table_Name],' + CHAR(13) + 
-                                            'COUNT([IT].[TABLE_NAME]) AS [Column_Count],' + CHAR(13) + 
-                                            'SUM([PA].[rows]) AS [Record_Count]' + CHAR(13) + 
-                                     'FROM [' + @Database_name + '].[sys].[tables] AS [ST]' + CHAR(13) + 
-                                         'INNER JOIN [' + @Database_name + '].[INFORMATION_SCHEMA].[COLUMNS] AS [IT] ON [ST].[name] = [IT].[TABLE_NAME]' + CHAR(13) + 
-                                         'INNER JOIN [' + @Database_name + '].[sys].[partitions] AS [PA] ON [ST].[object_id] = [PA].[object_id]' + CHAR(13) + 
-                                     'WHERE [type] = ''U''' + CHAR(13) + 
-                                     'GROUP BY [ST].[name]' + CHAR(13) + 
-                                     'ORDER BY [ST].[name];';
+        SET @Current_Table = (SELECT [TABLE] FROM #Report WHERE [ID] = @LoopCounter);
 
-        EXEC sp_executesql @SQL;        
+        SET @SQL = N'SET @Current_Record_Count_OUT = (SELECT COUNT(*) FROM ' + @Current_Table + ')';
+        SET @SQL_Param_Definition = N'@Current_Record_Count_OUT BIGINT OUTPUT';
+
+        EXEC sp_executesql @SQL, @SQL_Param_Definition, @Current_Record_Count_OUT = @Current_Record_Count OUTPUT;
+
+        SET @Current_PK_Count = (SELECT COUNT(*) FROM [sys].[key_constraints] WHERE OBJECT_NAME([parent_object_id]) = @Current_Table AND [type] = 'PK');
+        SET @Current_FK_Count = (SELECT COUNT(*) FROM [sys].[foreign_key_columns] WHERE OBJECT_NAME([parent_object_id]) = @Current_Table);
+
+        UPDATE #Report 
+        SET [RECORDS] = @Current_Record_Count,
+            [PRIMARY_KEYS] = @Current_PK_Count,
+            [FOREIGN_KEYS] = @Current_FK_Count
+        WHERE [TABLE] = @Current_Table;
+
+        SET @LoopCounter = @LoopCounter + 1; 
     END
+
+SELECT * FROM #Report;
+
 SET NOCOUNT OFF;
